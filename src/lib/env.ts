@@ -1,30 +1,35 @@
 
 // Environment variable utility functions
 
-// Check if a Gemini API key is set in the environment variables
+// Hardcoded API key - you can replace this with your actual API key
+const HARDCODED_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+
+// Check if a Gemini API key is set
 export const hasGeminiApiKey = (): boolean => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  // First check environment variables, then fall back to hardcoded key
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || HARDCODED_API_KEY;
   console.log("Checking for API key:", apiKey ? "Found" : "Not found");
-  return !!apiKey && apiKey.trim() !== '';
+  return !!apiKey && apiKey !== 'YOUR_GEMINI_API_KEY_HERE' && apiKey.trim() !== '';
 };
 
-// Get the Gemini API key from environment variables
+// Get the Gemini API key
 export const getGeminiApiKey = (): string => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-  if (!apiKey) {
-    console.warn("No Gemini API key found in environment variables");
+  // First check environment variables, then fall back to hardcoded key
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || HARDCODED_API_KEY;
+  if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
+    console.warn("Please replace 'YOUR_GEMINI_API_KEY_HERE' with your actual Gemini API key in src/lib/env.ts");
   }
   return apiKey;
 };
 
 // Instructions for setting up the API key
 export const apiKeyInstructions = `
-To use the Health Assistant, please add your Gemini API key:
+To use the Health Assistant, please add your Gemini API key by:
 
-1. Create a .env file in the root directory of your project
-2. Add the following line to the .env file:
-   VITE_GEMINI_API_KEY=your_api_key_here
-3. Restart the development server
+Option 1: Replace 'YOUR_GEMINI_API_KEY_HERE' in src/lib/env.ts with your actual API key
+
+Option 2: Create a .env file in the root directory with:
+VITE_GEMINI_API_KEY=your_api_key_here
 
 You can get a Gemini API key from Google AI Studio: https://makersuite.google.com/app/apikey
 `;
