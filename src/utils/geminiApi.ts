@@ -35,6 +35,12 @@ Assistant:
   `.trim();
 
   try {
+    console.log("Making API request to Gemini...");
+    
+    // Add a timeout of 30 seconds for the fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    
     // Make API request to Gemini
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -56,12 +62,27 @@ Assistant:
           maxOutputTokens: 1024,
         },
       }),
+      signal: controller.signal
     });
-
+    
+    clearTimeout(timeoutId);
+    
+    console.log("API response status:", response.status);
+    
     if (!response.ok) {
       const errorData = await response.text();
       console.error(`API request failed with status ${response.status}:`, errorData);
-      throw new Error(`API request failed with status ${response.status}`);
+      
+      // Handle specific error cases
+      if (response.status === 400) {
+        throw new Error(`API request failed: Invalid request (400). Check your API key format.`);
+      } else if (response.status === 401) {
+        throw new Error(`API request failed: Authentication error (401). Your API key may be invalid.`);
+      } else if (response.status === 403) {
+        throw new Error(`API request failed: Authorization error (403). Your API key may not have access to this resource.`);
+      } else {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -81,6 +102,17 @@ Assistant:
     return botResponse;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
+    
+    // Check for specific error types
+    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+      console.error("Network error: Could not connect to Gemini API");
+      throw new Error("Network error: Could not connect to Gemini API. Please check your internet connection.");
+    }
+    
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new Error("Request timed out. The Gemini API did not respond in time.");
+    }
+    
     throw error;
   }
 }

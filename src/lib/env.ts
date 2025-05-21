@@ -18,8 +18,11 @@ export const getGeminiApiKey = (): string => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY || HARDCODED_API_KEY;
   if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
     console.warn("Please replace 'YOUR_GEMINI_API_KEY_HERE' with your actual Gemini API key in src/lib/env.ts");
+    return apiKey;
   }
-  return apiKey;
+  
+  // Trim the API key to avoid common issues with copied keys
+  return apiKey.trim();
 };
 
 // Instructions for setting up the API key
