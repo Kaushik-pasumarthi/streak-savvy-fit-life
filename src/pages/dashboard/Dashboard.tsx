@@ -3,7 +3,6 @@ import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import WorkoutCard from "@/components/dashboard/WorkoutCard";
 import MealTracker from "@/components/dashboard/MealTracker";
-import VitalsCard from "@/components/dashboard/VitalsCard";
 import AchievementsCard from "@/components/dashboard/AchievementsCard";
 import ChatbotCard from "@/components/dashboard/ChatbotCard";
 
@@ -55,18 +54,6 @@ const Dashboard = () => {
       { name: "Afternoon Snack", calories: 180, time: "3:30 PM" },
       { name: "Dinner", calories: 200, time: "7:00 PM" },
     ],
-  };
-
-  const vitals = {
-    heartRate: 72,
-    waterIntake: {
-      consumed: 1.2,
-      target: 2.5,
-    },
-    steps: {
-      count: 6500,
-      target: 10000,
-    },
   };
 
   const achievements = [
@@ -144,17 +131,12 @@ const Dashboard = () => {
         </div>
         
         <div>
-          <h2 className="text-lg font-semibold mb-3">Nutrition & Health</h2>
+          <h2 className="text-lg font-semibold mb-3">Nutrition</h2>
           <div className="space-y-4">
             <MealTracker
               consumed={meals.consumed}
               target={meals.target}
               meals={meals.items}
-            />
-            <VitalsCard
-              heartRate={vitals.heartRate}
-              waterIntake={vitals.waterIntake}
-              steps={vitals.steps}
             />
           </div>
         </div>
