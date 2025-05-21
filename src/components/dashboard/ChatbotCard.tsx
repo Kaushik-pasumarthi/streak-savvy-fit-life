@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +22,18 @@ const ChatbotCard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [apiKeyStatus, setApiKeyStatus] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check if API key is configured on component mount
+    const hasKey = hasGeminiApiKey();
+    setApiKeyStatus(hasKey);
+    
+    if (!hasKey) {
+      console.log("No API key found. Opening settings dialog.");
+      setIsSettingsOpen(true);
+    }
+  }, []);
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
@@ -41,6 +53,7 @@ const ChatbotCard = () => {
     try {
       if (!hasGeminiApiKey()) {
         // Show a message if API key is not set
+        console.log("API key not found when sending message");
         setTimeout(() => {
           const botMessage: ChatMessage = {
             id: (Date.now() + 1).toString(),
@@ -50,18 +63,21 @@ const ChatbotCard = () => {
           };
           setMessages((prev) => [...prev, botMessage]);
           setIsLoading(false);
+          setIsSettingsOpen(true);
           
           toast({
             title: "API Key Missing",
             description: "Please configure your Gemini API key in settings.",
             variant: "destructive",
           });
-        }, 1000);
+        }, 300);
         return;
       }
 
+      console.log("Sending message to Gemini API...");
       // Send message to Gemini API
       const botResponse = await sendMessageToGemini(input, messages);
+      console.log("Received response from Gemini API");
 
       // Create bot message
       const botMessage: ChatMessage = {
@@ -73,7 +89,7 @@ const ChatbotCard = () => {
       
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Error calling Gemini API:", error);
+      console.error("Error in ChatbotCard.tsx:", error);
       
       // Create error message
       const errorMessage: ChatMessage = {
@@ -87,7 +103,7 @@ const ChatbotCard = () => {
       
       toast({
         title: "API Error",
-        description: "There was a problem connecting to the Gemini API.",
+        description: "There was a problem connecting to the Gemini API. Please verify your API key.",
         variant: "destructive",
       });
     } finally {
@@ -101,6 +117,9 @@ const ChatbotCard = () => {
         <CardTitle className="text-lg flex items-center">
           <MessageSquare className="h-5 w-5 mr-2" />
           Health Assistant
+          {apiKeyStatus === false && (
+            <span className="ml-2 text-xs text-amber-500">(API Key Missing)</span>
+          )}
         </CardTitle>
         <ChatSettings isOpen={isSettingsOpen} setIsOpen={setIsSettingsOpen} />
       </CardHeader>

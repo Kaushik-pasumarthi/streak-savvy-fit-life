@@ -45,6 +45,9 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ isOpen, setIsOpen }) => {
               {apiKeyInstructions}
             </div>
           </div>
+          <div className="mt-4 text-sm text-muted-foreground">
+            <p><strong>Note:</strong> After adding your API key to the .env file, you need to restart your development server for the changes to take effect.</p>
+          </div>
         </div>
         <DialogFooter>
           <Button onClick={() => setIsOpen(false)}>Close</Button>
