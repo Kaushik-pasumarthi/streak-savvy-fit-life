@@ -42,7 +42,8 @@ Assistant:
     const timeoutId = setTimeout(() => controller.abort(), 30000);
     
     // Make API request to Gemini
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAn8gaJiC8jSG_vb5NzPTeoc8J4ikZsjNo`, {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
