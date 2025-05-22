@@ -2,7 +2,7 @@
 // Environment variable utility functions
 
 // Hardcoded API key - you can replace this with your actual API key
-const HARDCODED_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+const HARDCODED_API_KEY = "AIzaSyAn8gaJiC8jSG_vb5NzPTeoc8J4ikZsjNo";
 
 // Check if a Gemini API key is set
 export const hasGeminiApiKey = (): boolean => {
