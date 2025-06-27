@@ -2,6 +2,7 @@
 # FitStreak App
 
 A fitness tracking application with workout streaks, meal tracking, and AI-powered health assistant.
+
 LIVE APPLICATION-
 https://fitstreak.netlify.app/
 
